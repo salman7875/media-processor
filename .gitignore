@@ -1,6 +1,7 @@
 /node_modules
 /uploads
 /dist
+/src/segments/*
 .env
 .DS_Store
 .vscode

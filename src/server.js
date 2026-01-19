@@ -3,6 +3,7 @@ import { spawn } from "child_process";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import os from "os";
 import { EventEmitter } from "events";
 
 const event = new EventEmitter();
@@ -18,13 +19,27 @@ if (!fs.existsSync(outputDir)) {
 }
 app.use("/public", express.static(path.join(__dirname + "./../public")));
 
+const MAX_PROCESSES = os.cpus().length;
+let currentProcesses = 0;
+const processQueue = [];
+
+const generateProcess = (args) => {
+  return new Promise((resolve, reject) => {
+    if (currentProcesses < MAX_PROCESSES) {
+      currentProcesses++;
+      const proc = spawn("yt-dlp", args);
+      resolve(proc);
+    }
+  });
+};
+
 app.get("/s", (req, res) => {
   res.send(
-    `<a href=http://localhost:3000/public/image1.jpg download>Click to download</a>`
+    `<a href=http://localhost:3000/public/image1.jpg download>Click to download</a>`,
   );
 });
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   const q = req.query.q;
 
   if (!q) {
@@ -35,11 +50,26 @@ app.get("/", (req, res) => {
 
   const file1 = path.join(
     outputDir,
-    `segment_part${Math.floor(Math.random() * 10)}.%(ext)s`
+    `segment_part${Math.floor(Math.random() * 10)}.%(ext)s`,
   );
-  const file2 = path.join(outputDir, "segment_part2.%(ext)s");
+  // const segment1 = spawn("yt-dlp", [
+  //   "-o",
+  //   file1,
+  //   "-S",
+  //   "res:1080",
+  //   "--download-sections",
+  //   "*00:00:00.00-00:00:00.00",
+  //   "--force-keyframes-at-cuts",
+  //   q,
+  // ]);
 
-  const segment1 = spawn("yt-dlp", [
+  // segment1.stdout.on("data", (data) => console.log(`Segment 1: ${data}`));
+  // segment1.stderr.on("data", (data) =>
+  //   console.error(`Segment 1 Error: ${data}`),
+  // );
+  // segment1.on("exit", (code) => console.log(`Segment 1 done (code ${code})`));
+
+  const segment = await generateProcess([
     "-o",
     file1,
     "-S",
@@ -49,36 +79,16 @@ app.get("/", (req, res) => {
     "--force-keyframes-at-cuts",
     q,
   ]);
-
-  // const segment2 = spawn("yt-dlp", [
-  //   "-o",
-  //   file2,
-  //   "-S",
-  //   "res:1080",
-  //   "--download-sections",
-  //   "*00:00:21.00-00:00:30.00",
-  //   "--force-keyframes-at-cuts",
-  //   q,
-  // ]);
-
-  segment1.stdout.on("data", (data) => console.log(`Segment 1: ${data}`));
-  segment1.stderr.on("data", (data) =>
-    console.error(`Segment 1 Error: ${data}`)
+  segment.stdout.on("data", (data) => console.log(`Segment 1: ${data}`));
+  segment.stderr.on("data", (data) =>
+    console.error(`Segment 1 Error: ${data}`),
   );
-  segment1.on("exit", (code) => console.log(`Segment 1 done (code ${code})`));
+  segment.on("exit", (code) => console.log(`Segment 1 done (code ${code})`));
 
-  // segment2.stdout.on("data", (data) => console.log(`Segment 2: ${data}`));
-  // segment2.stderr.on("data", (data) =>
-  //   console.error(`Segment 2 Error: ${data}`)
-  // );
-  // segment2.on("exit", (code) => {
-  //   console.log(`Segment 2 done (code ${code})`);
-  //   event.emit("FINISH", "DONE");
-  // });
   res
     .status(200)
     .send(
-      `<a href=http://localhost:3000/public/${"30 SECOND TIMER.webm"} download>Click to download</a>`
+      `<a href=http://localhost:3000/public/${"30 SECOND TIMER.webm"} download>Click to download</a>`,
     );
 });
 
