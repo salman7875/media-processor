@@ -1,5 +1,7 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
+
 import { getESMDirnam } from "./utils/esm-path.js";
 import mediaRoutes from "./modules/media/media.route.js";
 

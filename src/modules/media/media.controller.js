@@ -1,4 +1,4 @@
-import { getESMDirnam } from "../../utils/esm-path";
+import { getESMDirnam } from "../../utils/esm-path.js";
 import path from "path";
 
 export class MediaController {
