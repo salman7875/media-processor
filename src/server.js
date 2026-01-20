@@ -1,10 +1,9 @@
 import express from "express";
-import { spawn } from "child_process";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import os from "os";
 import { EventEmitter } from "events";
+import { spawnProcess } from "./utils/spawn-process";
 
 const event = new EventEmitter();
 
@@ -14,24 +13,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const outputDir = path.join(__dirname, "segments");
+
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 app.use("/public", express.static(path.join(__dirname + "./../public")));
-
-const MAX_PROCESSES = os.cpus().length;
-let currentProcesses = 0;
-const processQueue = [];
-
-const generateProcess = (args) => {
-  return new Promise((resolve, reject) => {
-    if (currentProcesses < MAX_PROCESSES) {
-      currentProcesses++;
-      const proc = spawn("yt-dlp", args);
-      resolve(proc);
-    }
-  });
-};
 
 app.get("/s", (req, res) => {
   res.send(
@@ -52,24 +38,8 @@ app.get("/", async (req, res) => {
     outputDir,
     `segment_part${Math.floor(Math.random() * 10)}.%(ext)s`,
   );
-  // const segment1 = spawn("yt-dlp", [
-  //   "-o",
-  //   file1,
-  //   "-S",
-  //   "res:1080",
-  //   "--download-sections",
-  //   "*00:00:00.00-00:00:00.00",
-  //   "--force-keyframes-at-cuts",
-  //   q,
-  // ]);
 
-  // segment1.stdout.on("data", (data) => console.log(`Segment 1: ${data}`));
-  // segment1.stderr.on("data", (data) =>
-  //   console.error(`Segment 1 Error: ${data}`),
-  // );
-  // segment1.on("exit", (code) => console.log(`Segment 1 done (code ${code})`));
-
-  const segment = await generateProcess([
+  const segment = await spawnProcess([
     "-o",
     file1,
     "-S",
