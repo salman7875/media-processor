@@ -1,12 +1,13 @@
-import { getESMDirnam } from "../../utils/esm-path.js";
 import path from "path";
+
+import { getESMDirnam } from "../../utils/esm-path.js";
+import { spawnProcess } from "../../utils/spawn-process.js";
 
 export class MediaController {
   async fetchVideo(req, res) {
     const q = req.query.q;
     const __dirname = getESMDirnam(import.meta.url);
     const outputDir = path.join(__dirname, "..", "..", "segments");
-
     if (!q) {
       return res
         .status(400)

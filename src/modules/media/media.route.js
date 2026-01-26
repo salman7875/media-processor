@@ -4,6 +4,6 @@ import { MediaController } from "./media.controller.js";
 const router = express.Router();
 const controller = new MediaController();
 
-router.get("/media", controller.fetchVideo);
+router.get("/", controller.fetchVideo);
 
 export default router;
