@@ -14,14 +14,14 @@ services:
       - db
       - redis
   db:
-  image: postgres:latest
-  environment:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: password
-    POSTGRES_DB: mydb
-  ports:
-    - "5432:5432"
-  restart: unless-stopped
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
   redis:
     image: redis:latest
     ports:

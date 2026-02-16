@@ -17,4 +17,8 @@ if (!fs.existsSync(outputDir)) {
 app.use("/public", express.static(path.join(__dirname + "./../public")));
 app.use("/media", mediaRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 export default app;

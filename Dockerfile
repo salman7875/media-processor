@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y nodejs ffmpeg \
     && add-apt-repository -y ppa:tomtomtom/yt-dlp \
     && apt-get update \
-    && apt-get install -y yt-dlp \
+    && apt-get install -y yt-dlp -U \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
