@@ -9,8 +9,6 @@ export class MediaController {
     const __dirname = getESMDirnam(import.meta.url);
     const outputDir = path.join(__dirname, "..", "..", "..", "segments");
 
-    console.log(__dirname, "😑", outputDir);
-
     if (!q) {
       return res
         .status(400)
@@ -39,10 +37,6 @@ export class MediaController {
     );
     segment.on("exit", (code) => console.log(`Segment 1 done (code ${code})`));
 
-    res
-      .status(200)
-      .send(
-        `<a href=http://localhost:3000/public/${"30 SECOND TIMER.webm"} download>Click to download</a>`,
-      );
+    res.status(200).json({ success: true, message: "Video is downloading!" });
   }
 }
