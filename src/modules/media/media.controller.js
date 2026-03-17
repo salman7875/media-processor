@@ -7,7 +7,10 @@ export class MediaController {
   async fetchVideo(req, res) {
     const q = req.query.q;
     const __dirname = getESMDirnam(import.meta.url);
-    const outputDir = path.join(__dirname, "..", "..", "segments");
+    const outputDir = path.join(__dirname, "..", "..", "..", "segments");
+
+    console.log(__dirname, "😑", outputDir);
+
     if (!q) {
       return res
         .status(400)
