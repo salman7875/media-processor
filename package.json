@@ -4,15 +4,24 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "test:media": "node test/load/media-download.js"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "npx tsx watch src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/autocannon": "^7.12.7",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.5.2",
+    "@typescript-eslint/parser": "^8.58.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.2"
   },
   "dependencies": {
     "express": "^5.1.0",

@@ -1,6 +1,6 @@
 import app from "./app.js";
 
-const PORT = 3000;
+const PORT: number = 3000;
 
 (() => {
   app.listen(PORT, () => {

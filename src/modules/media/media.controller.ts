@@ -1,10 +1,11 @@
-import path from "path";
+import path from "node:path";
+import { type Response, type Request } from "express";
 
 import { getESMDirnam } from "../../utils/esm-path.js";
 import { spawnProcess } from "../../utils/spawn-process.js";
 
 export class MediaController {
-  async fetchVideo(req, res) {
+  async fetchVideo(req: Request, res: Response) {
     const q = req.query.q;
     const __dirname = getESMDirnam(import.meta.url);
     const outputDir = path.join(__dirname, "..", "..", "..", "segments");
@@ -31,11 +32,15 @@ export class MediaController {
       q,
     ]);
 
-    segment.stdout.on("data", (data) => console.log(`Segment 1: ${data}`));
-    segment.stderr.on("data", (data) =>
-      console.error(`Segment 1 Error: ${data}`),
-    );
-    segment.on("exit", (code) => console.log(`Segment 1 done (code ${code})`));
+    if (segment) {
+      segment.stdout?.on("data", (data) => console.log(`Segment 1: ${data}`));
+      segment.stderr?.on("data", (data) =>
+        console.error(`Segment 1 Error: ${data}`),
+      );
+      segment.on("exit", (code) =>
+        console.log(`Segment 1 done (code ${code})`),
+      );
+    }
 
     res.status(200).json({ success: true, message: "Video is downloading!" });
   }
