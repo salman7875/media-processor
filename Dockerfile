@@ -15,6 +15,14 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /home/app
 
+COPY package*.json ./
+
 RUN npm i -g nodemon
 
-CMD ["nodemon", "src/server.js"]
+RUN npm ci --legacy-peer-deps
+
+COPY . .
+
+RUN npm run build
+
+CMD ["npm", "start"]
