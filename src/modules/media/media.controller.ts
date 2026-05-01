@@ -81,53 +81,24 @@ async function processVideoInBackground(
 
   console.log(`Processing of video ${id} completed!`);
 }
-export class MediaController {
-  async fetchVideo(req: Request, res: Response) {
-    const { q, speed } = req.query as {
-      q: string;
-      speed?: "1/4" | "1/3" | "1/2" | "1";
-    };
-    // const __dirname = getESMDirnam(import.meta.url);
-    // const outputDir = path.join(__dirname, "..", "..", "..", "segments");
 
-    if (!q) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please provide youtube link!" });
-    }
+async function fetchVideo(req: Request, res: Response) {
+  const { q, speed } = req.query as {
+    q: string;
+    speed?: "1/4" | "1/3" | "1/2" | "1";
+  };
 
-    // const file1 = path.join(
-    //   outputDir,
-    //   `segment_part${Math.floor(Math.random() * 10)}.%(ext)s`,
-    // );
-
-    // const segment = await spawnProcess([
-    //   "-o",
-    //   file1,
-    //   "-S",
-    //   "res:1080",
-    //   "--download-sections",
-    //   "*00:00:00.00-00:00:00.00",
-    //   "--force-keyframes-at-cuts",
-    //   q,
-    // ]);
-
-    // if (segment) {
-    //   segment.stdout?.on("data", (data) => console.log(`Segment 1: ${data}`));
-    //   segment.stderr?.on("data", (data) =>
-    //     console.error(`Segment 1 Error: ${data}`),
-    //   );
-    //   segment.on("exit", (code) =>
-    //     console.log(`Segment 1 done (code ${code})`),
-    //   );
-    // }
-
-    processVideoInBackground(
-      q,
-      speed,
-      Math.floor(Math.random() * 10).toString(),
-    );
-
-    res.status(200).json({ success: true, message: "Video is downloading!" });
+  if (!q) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide youtube link!" });
   }
+
+  processVideoInBackground(q, speed, Math.floor(Math.random() * 10).toString());
+
+  res.status(200).json({ success: true, message: "Video is downloading!" });
 }
+
+export const MediaController = {
+  fetchVideo,
+};
